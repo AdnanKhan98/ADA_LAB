@@ -1,12 +1,17 @@
+#include <stdio.h>
+
+#define RIGHT_TO_LEFT 0
+#define LEFT_TO_RIGHT 1
+
 int searchArr(int a[], int n, int mobile)
 {
     for (int i = 0; i < n; i++)
         if (a[i] == mobile)
             return i + 1;
+    return -1; // Mobile not found
 }
- 
 
-int getMobile(int a[], bool dir[], int n)
+int getMobile(int a[], int dir[], int n)
 {
     int mobile_prev = 0, mobile = 0;
     for (int i = 0; i < n; i++) {
@@ -17,32 +22,38 @@ int getMobile(int a[], bool dir[], int n)
                 mobile_prev = mobile;
             }
         }
- 
-                if (dir[a[i] - 1] == LEFT_TO_RIGHT && i != n - 1) {
+
+        if (dir[a[i] - 1] == LEFT_TO_RIGHT && i != n - 1) {
             if (a[i] > a[i + 1] && a[i] > mobile_prev) {
                 mobile = a[i];
                 mobile_prev = mobile;
             }
         }
     }
- 
+
     if (mobile == 0 && mobile_prev == 0)
         return 0;
     else
         return mobile;
 }
- 
-int printOnePerm(int a[], bool dir[], int n)
+
+void swap(int* a, int* b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void printOnePerm(int a[], int dir[], int n)
 {
     int mobile = getMobile(a, dir, n);
     int pos = searchArr(a, n, mobile);
- 
+
     if (dir[a[pos - 1] - 1] == RIGHT_TO_LEFT)
-        swap(a[pos - 1], a[pos - 2]);
- 
+        swap(&a[pos - 1], &a[pos - 2]);
     else if (dir[a[pos - 1] - 1] == LEFT_TO_RIGHT)
-        swap(a[pos], a[pos - 1]);
- 
+        swap(&a[pos], &a[pos - 1]);
+
     for (int i = 0; i < n; i++) {
         if (a[i] > mobile) {
             if (dir[a[i] - 1] == LEFT_TO_RIGHT)
@@ -51,12 +62,12 @@ int printOnePerm(int a[], bool dir[], int n)
                 dir[a[i] - 1] = LEFT_TO_RIGHT;
         }
     }
- 
+
     for (int i = 0; i < n; i++)
-        cout << a[i];
-    cout << " ";
+        printf("%d ", a[i]);
+    printf("\n");
 }
- 
+
 int fact(int n)
 {
     int res = 1;
@@ -64,23 +75,30 @@ int fact(int n)
         res = res * i;
     return res;
 }
- 
+
 void printPermutation(int n)
 {
-        int a[n];
-         bool dir[n];
-    
+    int a[n];
+    int dir[n];
+
     for (int i = 0; i < n; i++) {
         a[i] = i + 1;
-        cout << a[i];
+        printf("%d ", a[i]);
     }
-    cout << endl;
- 
+    printf("\n");
+
     for (int i = 0; i < n; i++)
         dir[i] = RIGHT_TO_LEFT;
- 
+
     for (int i = 1; i < fact(n); i++)
         printOnePerm(a, dir, n);
 }
- 
 
+int main()
+{
+    int n;
+    printf("Enter the value of n: ");
+    scanf("%d", &n);
+    printPermutation(n);
+    return 0;
+}
